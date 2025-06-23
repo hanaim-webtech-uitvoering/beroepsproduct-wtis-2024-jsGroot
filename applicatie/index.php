@@ -1,19 +1,86 @@
+<?php
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once 'data_functies.php';
+require_once 'view_functies.php';
+
+$menuKaart = haalMenuItemsOp();
+
+$menuKaartHtml = menuItemsNaarHtmlTable($menuKaart);
+
+var_dump($_SESSION);
+?>
+
+<?php
+    $_SESSION['melding'] ?? '';
+    unset($_SESSION['melding']);
+?>
+
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index</title>
-</head>
-<body>
-    <h1>It Works!</h1>
-    <?php echo('Hallo WT\'er, de webserver is online en PHP werkt.'); ?>
-    <br>
-    <br>
-    Alle technische informatie over je webserver vind je hier: <a href="phpinfo.php">http://<?=$_SERVER['HTTP_HOST']?>/phpinfo.php</a>
-    <br>
-    <br>
-    Een voorbeeld van een pagina die gegevens uit de database haalt vind je hier: <a href="componist-aantalstukken.php">http://<?=$_SERVER['HTTP_HOST']?>/componist-aantalstukken.php</a>
-</body>
+<html lang="nl">
+
+  <head>
+    <meta charset="UTF-8" />
+    <title>Restaurantmenu</title>
+    <script src="https://kit.fontawesome.com/e9cf9c1d51.js" crossorigin="anonymous"></script>
+  </head>
+
+  <body>
+
+    <header>
+        <div>
+            <a href='index.php'><button>home</button></a>
+        </div>
+        <?php
+        if (isset($_SESSION["gebruiker"])) {
+            $gebruiker = $_SESSION['gebruiker'];
+            echo "<p> gebruiker $gebruiker is ingelogd</p>";
+        echo "
+        <div>
+            <a href='mand.php'><button>mand</button></a>
+        </div>
+        <div>
+            <a href='profiel.php'><button>profiel</button></a>
+        </div>
+        <form method='post'>
+            <button type='submit' name='uitloggen'>uitloggen</button>
+        </form>
+        ";
+        } elseif (isset($_SESSION["personeel_gebruiker"])) {
+            $personeel_gebruiker = $_SESSION['personeel_gebruiker'];
+            echo "<p>personeel $personeel_gebruiker is ingelogd</p>
+            <div>
+                <a href='Bestellingoverzicht.php'><button>Bestellingoverzicht</button></a>
+            </div>
+            <form method='post'>
+                <button type='submit' name='uitloggen'>uitloggen</button>
+            </form>
+            ";
+        } else {
+            echo"
+            <div>
+            <a href='registreren.php'><button>registreren/inloggen</button></a>
+        </div>
+        ";
+        }
+
+        if (isset($_POST['uitloggen'])) {
+            session_destroy();
+            header("Location: index.php");
+        }
+        ?>
+    </header>
+
+    <h1>Menu</h1>
+    <?= $menuKaartHtml ?> 
+
+    <footer>
+        <a href="privacy.html">©privacybeleid</a>
+    </footer>
+    
+  </body>
 </html>
+
