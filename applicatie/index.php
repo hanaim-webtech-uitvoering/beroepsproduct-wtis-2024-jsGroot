@@ -10,8 +10,6 @@ require_once 'view_functies.php';
 $menuKaart = haalMenuItemsOp();
 
 $menuKaartHtml = menuItemsNaarHtmlTable($menuKaart);
-
-var_dump($_SESSION);
 ?>
 
 <?php
